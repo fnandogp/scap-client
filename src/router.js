@@ -41,17 +41,17 @@ let router = new VueRouter({
           children: [
             {
               path: 'login',
-              name: 'login',
+              name: 'auth-login',
               component: load('views/auth/Login')
             },
             {
               path: 'password',
-              name: 'password-recovery-request',
+              name: 'auth-password-recovery-request',
               component: load('views/auth/PasswordRecoveryRequest')
             },
             {
               path: 'password-change',
-              name: 'password-recovery-change',
+              name: 'auth-password-recovery-change',
               component: load('views/auth/PasswordRecoveryChange')
             }
           ]

@@ -1,6 +1,12 @@
 import Vue from 'vue'
 import axios from 'axios'
-import store from 'src/store'
+import {
+  Alert,
+  LocalStorage,
+  Toast
+} from 'quasar'
+
+console.log(process.env.API_URL)
 
 const http = axios.create({
   baseURL: process.env.API_URL,
@@ -10,6 +16,11 @@ const http = axios.create({
     'Content-Type': 'application/json'
   }
 })
+
+if (LocalStorage.get.item('token')) {
+  console.log(http)
+  console.log(http.headers)
+}
 
 http.interceptors.response.use((response) => {
   console.log('Response:')
@@ -21,8 +32,14 @@ http.interceptors.response.use((response) => {
 
   let errors = res.data.errors
 
+  if (res.status === 200) {
+    Toast.create({
+      color: 'positive',
+      html: response.message
+    })
+  }
+
   if (res.status === 422) {
-    let payload = {}
     let messages = []
 
     for (let key in errors) {
@@ -30,11 +47,10 @@ http.interceptors.response.use((response) => {
         messages.push(message)
       }
     }
-
-    payload.type = 'error'
-    payload.messages = messages
-
-    store.dispatch('SET_ALERTS', payload)
+    Alert.create({
+      color: 'negative',
+      html: messages
+    })
   }
 })
 

@@ -6,5 +6,4 @@ npm-debug.log*
 cordova/platforms
 cordova/plugins
 
-# Environment file
-.env
+.idea

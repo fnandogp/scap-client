@@ -62,9 +62,15 @@
 </template>
 
 <script>
+  import { QLayout, QToolbar, QToolbarTitle } from 'quasar'
+
   export default {
+
     data () {
       return {}
+    },
+    components: {
+      QLayout, QToolbar, QToolbarTitle
     }
   }
 </script>
