@@ -1,8 +1,8 @@
 export default {
-  set_title (state, payload) {
+  SET_TITLE (state, payload) {
     state.title = payload
+  },
+  SET_ALERT (state, payload) {
+    state.alerts[payload.type] = payload.alerts
   }
-  // set_alerts (state, payload) {
-  //   state.alert[payload.type] = payload.alerts
-  // }
 }

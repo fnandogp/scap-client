@@ -22,36 +22,35 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
   import { QField, QInput, QBtn } from 'quasar'
+  import store from 'src/store'
 
   export default {
     data () {
       return {
-        email: '',
-        password: ''
+        email: 'admin@example.com',
+        password: 'secret'
       }
     },
     methods: {
-      ...mapActions,
       login () {
         this.$http.post('/auth/login', {
           email: this.email,
           password: this.password
         })
           .then((response) => {
-            this.login('auth/login', response)
+            this.$store.dispatch('auth/login', response.data)
           })
-          .catch((response) => {
-            console.log(response)
+          .catch((error) => {
+            console.log(error)
           })
       }
+    },
+    mounted () {
+      store.commit('SET_TITLE', 'Login')
     },
     components: {
       QField, QInput, QBtn
     }
   }
 </script>
-
-<style>
-</style>

@@ -1,17 +1,20 @@
 <template>
-    <!-- Don't drop "q-app" class -->
-    <div id="q-app">
-        <router-view></router-view>
-    </div>
+  <!-- Don't drop "q-app" class -->
+  <div id="q-app">
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
-  /*
-   * Root component
-   */
-  export default {}
+  import store from 'src/store'
+
+  export default {
+    mounted () {
+      store.dispatch('auth/checkToken')
+    }
+  }
 </script>
 
 <style lang="stylus">
-    /*@import '~variables'*/
+  /*@import '~variables'*/
 </style>

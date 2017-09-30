@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from 'src/store'
+// import http from 'src/api'
+import { Loading } from 'quasar'
 
 Vue.use(VueRouter)
-
-import { Loading } from 'quasar'
 
 /*
  * Uncomment this section and use "load()" if you want
@@ -30,38 +31,59 @@ let router = new VueRouter({
 
   routes: [
     {
-      path: '/',
-      nome: 'Home',
-      component: load('views/View'),
+      path: '/auth',
+      name: 'auth',
+      component: load('views/auth/Auth'),
       children: [
         {
-          path: 'auth',
-          name: 'auth',
-          component: load('views/auth/Auth'),
-          children: [
-            {
-              path: 'login',
-              name: 'auth-login',
-              component: load('views/auth/Login')
-            },
-            {
-              path: 'password',
-              name: 'auth-password-recovery-request',
-              component: load('views/auth/PasswordRecoveryRequest')
-            },
-            {
-              path: 'password-change',
-              name: 'auth-password-recovery-change',
-              component: load('views/auth/PasswordRecoveryChange')
-            }
-          ]
+          path: 'login',
+          name: 'auth.login',
+          component: load('views/auth/Login')
+        },
+        {
+          path: 'password',
+          name: 'auth.password-recovery-request',
+          component: load('views/auth/PasswordRecoveryRequest')
+        },
+        {
+          path: 'password-change',
+          name: 'auth.password-recovery-change',
+          component: load('views/auth/PasswordRecoveryChange')
         }
       ]
+    },
+    {
+      path: '/',
+      name: 'admin',
+      component: load('views/admin/Admin'),
+      meta: {requiresAuth: true},
+      children: [
+        {
+          path: '/',
+          name: 'home',
+          component: load('views/admin/Home'),
+          meta: {requiresAuth: true}
+        }
+      ]
+    },
+    {
+      path: '*',
+      name: 'not-found',
+      component: load('views/NotFound')
     }
   ]
 })
 
 router.beforeEach((to, from, next) => {
+  store.dispatch('clearAlerts')
+
+  let auth = to.meta.requiresAuth
+  let token = store.state.token
+
+  if (auth && !token) {
+    next('/auth/login')
+  }
+
   Loading.show()
   next()
 })

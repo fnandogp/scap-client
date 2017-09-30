@@ -28,12 +28,12 @@ module.exports = {
     'arrow-parens': 0,
     'one-var': 0,
     'import/first': 0,
-    'import/named': 2,
-    'import/namespace': 2,
-    'import/default': 2,
-    'import/export': 2,
+    'import/named': 1,
+    'import/namespace': 1,
+    'import/default': 1,
+    'import/export': 1,
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-    'brace-style': [2, 'stroustrup', { 'allowSingleLine': true }]
+    'no-debugger': process.env.NODE_ENV === 'production' ? 1 : 0,
+    'brace-style': [1, 'stroustrup', { 'allowSingleLine': true }]
   }
 }

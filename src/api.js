@@ -1,45 +1,28 @@
 import Vue from 'vue'
 import axios from 'axios'
-import {
-  Alert,
-  LocalStorage,
-  Toast
-} from 'quasar'
-
-console.log(process.env.API_URL)
+import { Alert } from 'quasar'
 
 const http = axios.create({
   baseURL: process.env.API_URL,
   headers: {
-    // 'Authorization': 'Bearer {token}',
     'Accept': 'application/json',
     'Content-Type': 'application/json'
   }
 })
 
-if (LocalStorage.get.item('token')) {
-  console.log(http)
-  console.log(http.headers)
-}
-
 http.interceptors.response.use((response) => {
-  console.log('Response:')
-  console.log(response)
-}, (response) => {
-  let res = response.response
-  console.log('Error:')
-  console.log(res)
-
-  let errors = res.data.errors
-
-  if (res.status === 200) {
-    Toast.create({
+  if (response.data.message) {
+    Alert.create({
       color: 'positive',
-      html: response.message
+      html: response.data.message
     })
   }
 
-  if (res.status === 422) {
+  return response
+}, (response) => {
+  let errors = response.data.errors
+
+  if (response.status === 422) {
     let messages = []
 
     for (let key in errors) {
@@ -52,6 +35,10 @@ http.interceptors.response.use((response) => {
       html: messages
     })
   }
+
+  return response
 })
 
 Vue.prototype.$http = http
+
+export default http

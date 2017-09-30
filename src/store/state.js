@@ -1,8 +1,9 @@
 export default {
-  title: ''
-  // alerts: {
-  //   info: {},
-  //   warning: {},
-  //   error: {}
-  // }
+  title: '',
+  alerts: {
+    success: [],
+    info: [],
+    warning: [],
+    error: []
+  }
 }
