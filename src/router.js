@@ -66,9 +66,18 @@ let router = new VueRouter({
         },
         {
           path: '/users',
-          name: 'users',
-          component: load('views/admin/users/UserIndex'),
-          meta: {requiresAuth: true}
+          name: 'user',
+          component: load('views/admin/users/UserList'),
+          meta: {requiresAuth: true},
+          children: [
+            {
+              path: '/create',
+              name: 'user.create',
+              component: load('views/admin/UserCreate'),
+              // meta: {requiresRole: ['admin', 'secretary']}
+              meta: {requiresAuth: true}
+            }
+          ]
         }
       ]
     },

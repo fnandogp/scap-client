@@ -25,7 +25,7 @@ export default {
   },
 
   attemptLogin ({dispatch}, payload) {
-    api.attemptLogin(payload)
+    api.auth.attemptLogin(payload)
       .then((response) => {
         let token = response.data.token
         let user = response.data.data
@@ -39,7 +39,7 @@ export default {
   },
 
   logout ({dispatch}) {
-    api.logout()
+    api.auth.logout()
 
     return Promise.all([
       dispatch('setToken', null),
@@ -48,7 +48,7 @@ export default {
   },
 
   loadUser ({dispatch}) {
-    api.me()
+    api.auth.me()
       .then((response) => {
         let user = response.data.data
 
