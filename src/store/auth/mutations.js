@@ -1,14 +1,8 @@
 export default {
-  SET_TOKEN (state, payload) {
-    state.token = payload
+  SET_TOKEN (state, token) {
+    state.token = token
   },
-  UNSET_TOKEN (state) {
-    state.token = ''
-  },
-  SET_USER (state, payload) {
-    state.user = payload
-  },
-  UNSET_USER (state) {
-    state.user = {}
+  SET_USER (state, user) {
+    state.user = user
   }
 }

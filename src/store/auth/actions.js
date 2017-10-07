@@ -1,46 +1,82 @@
-import http from 'src/api'
-import router from 'src/router'
+import http from 'src/http'
+import api from 'src/api'
 import { LocalStorage } from 'quasar'
 
 export default {
-  checkToken ({commit}, payload) {
-    let token = LocalStorage.get.item('token')
+  checkToken ({dispatch, state}, payload) {
+    let token = state.token
 
-    if (!token) {
-      console.log('not token')
-      router.push({name: 'auth.login'})
+    if (token) {
+      return Promise.resolve(token)
     }
 
-    // Set the authorization header
-    http.defaults.headers.common['Authorization'] = `Bearer ${LocalStorage.get.item('token')}`
+    token = LocalStorage.get.item('token')
 
-    http.get('/auth/me')
+    if (!token) {
+      return Promise.reject(new Error('NO_TOKEN'))
+    }
+
+    return dispatch('setToken', token)
+      .then(() => {
+        return dispatch('loadUser').catch(() => {
+          console.log('catch set token')
+        })
+      })
+  },
+
+  attemptLogin ({dispatch}, payload) {
+    api.attemptLogin(payload)
       .then((response) => {
-        commit('SET_USER', response.data)
+        let token = response.data.token
+        let user = response.data.data
 
-        return response
-      })
-      .catch((response) => {
-        console.log('auth me catch')
-        router.push({name: 'auth.login'})
+        dispatch('setToken', token)
 
-        return response
+        dispatch('setUser', token)
+
+        return user
       })
   },
-  login ({commit}, payload) {
-    commit('SET_TOKEN', payload.token)
-    LocalStorage.set('token', payload.token)
 
-    commit('SET_USER', payload.data)
+  logout ({dispatch}) {
+    api.logout()
 
-    router.push({name: 'home'})
+    return Promise.all([
+      dispatch('setToken', null),
+      dispatch('setUser', {})
+    ])
   },
-  logout ({commit}, payload) {
-    commit('UNSET_TOKEN')
-    LocalStorage.remove('token')
 
-    commit('UNSET_USER')
+  loadUser ({dispatch}) {
+    api.me()
+      .then((response) => {
+        let user = response.data.data
 
-    router.push({name: 'auth.login'})
+        return dispatch('setUser', user)
+      })
+      .catch(() => {
+        // Process failure, delete the token
+        dispatch('setToken', '')
+        return Promise.reject(new Error('FAIL_IN_LOAD_USER'))
+      })
+  },
+
+  setToken ({commit}, token) {
+    commit('SET_TOKEN', token)
+
+    LocalStorage.set('token', token)
+    if (!token) {
+      LocalStorage.remove('token')
+    }
+
+    http.defaults.headers.common['Authorization'] = `Bearer ${token}`
+
+    return Promise.resolve(token)
+  },
+
+  setUser ({commit}, user) {
+    commit('SET_USER', user)
+
+    return Promise.resolve(user)
   }
 }

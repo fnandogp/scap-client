@@ -1,6 +1,5 @@
 <template>
-
-  <div id="not-found">
+  <div class="layout-padding">
     <q-card color="warning">
 
       <q-card-title>

@@ -26,8 +26,11 @@
         </q-side-link>
 
         <q-item-separator />
-
-        <q-item @click="logout()">
+        <q-item @click="$router.push({name:'auth.login'})">
+          <q-item-side icon="exit to app" />
+          <q-item-main label="Login" sublabel="TODO: remove after tests" />
+        </q-item>
+        <q-item @click="exit()">
           <q-item-side icon="exit to app" />
           <q-item-main label="Logout" />
         </q-item>
@@ -55,6 +58,7 @@
     QItemMain,
     QItemSeparator
   } from 'quasar'
+  import { mapActions } from 'vuex'
   import store from 'src/store'
 
   export default {
@@ -65,8 +69,12 @@
       title: () => store.state.title
     },
     methods: {
-      logout () {
-        store.dispatch('auth/logout')
+      ...mapActions({
+        logout: 'auth/logout'
+      }),
+      exit () {
+        this.logout()
+        this.$router.push({name: 'auth.login'})
       }
     },
     components: {

@@ -6,13 +6,7 @@
 </template>
 
 <script>
-  import store from 'src/store'
-
-  export default {
-    mounted () {
-      store.dispatch('auth/checkToken')
-    }
-  }
+  export default {}
 </script>
 
 <style lang="stylus">

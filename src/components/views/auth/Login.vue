@@ -14,7 +14,7 @@
 
     <q-field>
       <q-btn color="primary"
-             @click="login()">
+             @click="submit()">
         Log in
       </q-btn>
     </q-field>
@@ -24,6 +24,7 @@
 <script>
   import { QField, QInput, QBtn } from 'quasar'
   import store from 'src/store'
+  import { mapActions } from 'vuex'
 
   export default {
     data () {
@@ -33,16 +34,14 @@
       }
     },
     methods: {
-      login () {
-        this.$http.post('/auth/login', {
-          email: this.email,
-          password: this.password
-        })
-          .then((response) => {
-            this.$store.dispatch('auth/login', response.data)
-          })
-          .catch((error) => {
-            console.log(error)
+      ...mapActions({
+        attemptLogin: 'auth/attemptLogin'
+      }),
+      submit () {
+        let {email, password} = this
+        this.attemptLogin({email, password})
+          .then(() => {
+            this.$router.push({name: 'home'})
           })
       }
     },
