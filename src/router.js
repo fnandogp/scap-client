@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from 'src/store'
-// import http from 'src/api'
 import { Loading } from 'quasar'
 
 Vue.use(VueRouter)
@@ -32,29 +31,30 @@ let router = new VueRouter({
   routes: [
     {
       path: '/auth',
-      name: 'auth',
       component: load('views/auth/Auth'),
       children: [
         {
           path: 'login',
           name: 'auth.login',
-          component: load('views/auth/Login')
+          component: load('views/auth/Login'),
+          meta: {requiresGuest: true}
         },
         {
           path: 'password',
           name: 'auth.password-recovery-request',
-          component: load('views/auth/PasswordRecoveryRequest')
+          component: load('views/auth/PasswordRecoveryRequest'),
+          meta: {requiresGuest: true}
         },
         {
           path: 'password-change',
           name: 'auth.password-recovery-change',
-          component: load('views/auth/PasswordRecoveryChange')
+          component: load('views/auth/PasswordRecoveryChange'),
+          meta: {requiresGuest: true}
         }
       ]
     },
     {
       path: '/',
-      name: 'admin',
       component: load('views/admin/Admin'),
       meta: {requiresAuth: true},
       children: [
@@ -63,6 +63,21 @@ let router = new VueRouter({
           name: 'home',
           component: load('views/admin/Home'),
           meta: {requiresAuth: true}
+        },
+        {
+          path: '/users',
+          name: 'user',
+          component: load('views/admin/users/UserList'),
+          meta: {requiresAuth: true},
+          children: [
+            {
+              path: '/create',
+              name: 'user.create',
+              component: load('views/admin/UserCreate'),
+              // meta: {requiresRole: ['admin', 'secretary']}
+              meta: {requiresAuth: true}
+            }
+          ]
         }
       ]
     },
@@ -75,16 +90,27 @@ let router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  Loading.show()
+
   store.dispatch('clearAlerts')
 
-  let auth = to.meta.requiresAuth
-  let token = store.state.token
+  let requiresAuth = to.meta.requiresAuth
 
-  if (auth && !token) {
-    next('/auth/login')
+  if (!requiresAuth) {
+    next()
+    return
   }
 
-  Loading.show()
+  store.dispatch('auth/checkToken')
+    .then(() => {
+      // There is a token and it is valid
+      next() // can access the route
+    })
+    .catch(() => {
+      // No token, or it is invalid
+      next({name: 'auth.login'}) // redirect to login
+    })
+
   next()
 })
 
