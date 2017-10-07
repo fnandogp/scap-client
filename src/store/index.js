@@ -7,6 +7,7 @@ import actions from './actions'
 
 import auth from './auth'
 import user from './user'
+import removalRequest from './removalRequest'
 
 Vue.use(Vuex)
 
@@ -16,6 +17,7 @@ export default new Vuex.Store({
   actions,
   modules: {
     auth,
-    user
+    user,
+    removalRequest
   }
 })

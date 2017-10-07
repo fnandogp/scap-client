@@ -2,26 +2,30 @@
   <div class="layout-padding">
 
     <q-list>
-      <q-list-header>Users</q-list-header>
+      <q-list-header>Removal Requests</q-list-header>
 
       <q-item-separator />
 
       <q-item
-              v-for="user in users"
-              :key="user.id"
+              v-for="removalRequest in removalRequests"
+              :key="removalRequest.id"
               v-if="ready">
         <q-item-main>
-          <q-item-tile label>{{ user.name }}</q-item-tile>
-          <q-item-tile sublabel>{{ user.enrollment }}</q-item-tile>
+          <q-item-tile label>{{ removalRequest.user.name }} ({{ removalRequest.user.enrollment }})</q-item-tile>
+          <q-item-tile sublabel>Type: <strong>{{ removalRequest.type }}</strong></q-item-tile>
+          <q-item-tile sublabel>From <strong>{{ removalRequest.removal_from }}</strong>
+                                to <strong>{{ removalRequest.removal_from }}</strong></q-item-tile>
+          <q-item-tile sublabel>Status: <strong>{{ removalRequest.status }}</strong></q-item-tile>
         </q-item-main>
         <!--<q-item-side right>-->
         <!--<q-item-tile icon="more_vert" />-->
         <!--</q-item-side>-->
+
       </q-item>
 
-      <q-item v-if="ready && (users.length == 0)">
+      <q-item v-if="ready && (removalRequests.length == 0)">
         <q-item-side icon="info_outline" />
-        <q-item-main sublabel="No users found." />
+        <q-item-main sublabel="No removal requests found." />
       </q-item>
 
       <q-item v-if="!ready">
@@ -57,12 +61,12 @@
     },
     computed: {
       ...mapState({
-        users: state => state.user.list
+        removalRequests: state => state.removalRequest.list
       })
     },
     mounted () {
-      store.state.title = 'Users'
-      this.fetchUsers()
+      store.state.title = 'Removal Requests'
+      this.fetchRemovalRequests()
         .then(() => {
           this.ready = true
         })
@@ -72,7 +76,7 @@
     },
     methods: {
       ...mapActions({
-        fetchUsers: 'user/fetch'
+        fetchRemovalRequests: 'removalRequest/fetch'
       })
     }
   }
