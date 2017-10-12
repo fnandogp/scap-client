@@ -27,6 +27,7 @@
   import { mapActions } from 'vuex'
 
   export default {
+    components: {QField, QInput, QBtn},
     data () {
       return {
         email: 'admin@example.com',
@@ -47,9 +48,6 @@
     },
     mounted () {
       store.commit('SET_TITLE', 'Login')
-    },
-    components: {
-      QField, QInput, QBtn
     }
   }
 </script>

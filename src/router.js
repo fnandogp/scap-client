@@ -66,14 +66,23 @@ let router = new VueRouter({
         },
         {
           path: '/users',
-          name: 'user.list',
-          component: load('views/admin/users/UserList'),
+          name: 'user.index',
+          components: {
+            default: load('views/admin/users/UserIndex'),
+            'floatingActions': load('views/admin/users/UserIndexFloatingActions')
+          },
+          meta: {requiresAuth: true}
+        },
+        {
+          path: '/users/create',
+          name: 'user.create',
+          component: load('views/admin/users/UserCreate'),
           meta: {requiresAuth: true}
         },
         {
           path: '/removal-requests',
-          name: 'removal-request.list',
-          component: load('views/admin/removal-request/RemovalRequestList'),
+          name: 'removal-request.index',
+          component: load('views/admin/removal-request/RemovalRequestIndex'),
           meta: {requiresAuth: true}
         }
       ]
@@ -98,15 +107,13 @@ router.beforeEach((to, from, next) => {
     return
   }
 
-  store.dispatch('auth/checkToken')
-    .then(() => {
-      // There is a token and it is valid
-      next() // can access the route
-    })
-    .catch(() => {
-      // No token, or it is invalid
-      next({name: 'auth.login'}) // redirect to login
-    })
+  store.dispatch('auth/checkToken').then(() => {
+    // There is a token and it is valid
+    next() // can access the route
+  }).catch(() => {
+    // No token, or it is invalid
+    next({name: 'auth.login'}) // redirect to login
+  })
 
   next()
 })

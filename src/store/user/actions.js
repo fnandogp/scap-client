@@ -9,5 +9,9 @@ export default {
 
         return Promise.resolve(users)
       })
+  },
+
+  create ({commit}, payload) {
+    return api.user.create(payload)
   }
 }
