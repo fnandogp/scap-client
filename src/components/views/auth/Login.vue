@@ -40,10 +40,9 @@
       }),
       submit () {
         let {email, password} = this
-        this.attemptLogin({email, password})
-          .then(() => {
-            this.$router.push({name: 'home'})
-          })
+        this.attemptLogin({email, password}).then(() => {
+          this.$router.push({name: 'home'})
+        })
       }
     },
     mounted () {

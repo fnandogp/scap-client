@@ -80,6 +80,12 @@ let router = new VueRouter({
           meta: {requiresAuth: true}
         },
         {
+          path: '/users/:userId/edit',
+          name: 'user.edit',
+          component: load('views/admin/users/UserEdit'),
+          meta: {requiresAuth: true}
+        },
+        {
           path: '/removal-requests',
           name: 'removal-request.index',
           component: load('views/admin/removal-request/RemovalRequestIndex'),
