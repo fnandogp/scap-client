@@ -35,9 +35,7 @@
       }
     },
     methods: {
-      ...mapActions({
-        attemptLogin: 'auth/attemptLogin'
-      }),
+      ...mapActions({attemptLogin: 'auth/attemptLogin'}),
       submit () {
         let {email, password} = this
         this.attemptLogin({email, password})

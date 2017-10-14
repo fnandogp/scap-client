@@ -1,17 +1,22 @@
 <template>
   <div class="layout-padding">
 
-    <q-list>
-      <q-list-header>Removal Requests</q-list-header>
+    <q-list highlight>
+      <!--header-->
+      <q-list-header>
+        Removal Requests
+      </q-list-header>
 
       <q-item-separator />
 
+      <!--removal request info-->
       <q-item
               v-for="removalRequest in removalRequests"
               :key="removalRequest.id"
               v-if="ready">
         <q-item-main>
-          <q-item-tile label>{{ removalRequest.user.data.name }} ({{ removalRequest.user.data.enrollment }})</q-item-tile>
+          <q-item-tile label>{{ removalRequest.user.data.name }} ({{ removalRequest.user.data.enrollment }})
+          </q-item-tile>
           <q-item-tile sublabel>Type: <strong>{{ removalRequest.type }}</strong></q-item-tile>
           <q-item-tile sublabel>From <strong>{{ removalRequest.removal_from }}</strong>
                                 to <strong>{{ removalRequest.removal_from }}</strong></q-item-tile>
@@ -66,10 +71,9 @@
     },
     mounted () {
       store.state.title = 'Removal Requests'
-      this.fetchRemovalRequests()
-        .then(() => {
-          this.ready = true
-        })
+      this.fetchRemovalRequests().then(() => {
+        this.ready = true
+      })
     },
     components: {
       QList, QListHeader, QItem, QItemSide, QItemMain, QItemTile, QItemSeparator, QInnerLoading, QSpinner

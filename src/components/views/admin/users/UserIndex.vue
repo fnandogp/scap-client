@@ -1,22 +1,65 @@
 <template>
   <div class="layout-padding">
 
-    <q-list>
-      <q-list-header>Users</q-list-header>
+    <q-list highlight>
+      <!--header-->
+      <q-list-header>
+        Users
+      </q-list-header>
 
       <q-item-separator />
 
-      <q-item
-              v-for="user in users"
-              :key="user.id"
-              v-if="ready">
+      <!--user info -->
+      <q-item separator
+          v-for="(user, index) in users"
+          :key="user.id"
+          v-if="ready">
         <q-item-main>
-          <q-item-tile label>{{ user.name }} <small>({{ user.email }})</small></q-item-tile>
-          <q-item-tile sublabel>{{ user.enrollment }}</q-item-tile>
+          <q-item-tile label>{{ user.name }}
+            <small>({{ user.email }})</small>
+          </q-item-tile>
+          <q-item-tile sublabel>Enrollment: {{ user.enrollment }}</q-item-tile>
+          <q-item-tile sublabel>Roles: {{ user.roles.join(', ') }}</q-item-tile>
         </q-item-main>
-        <!--<q-item-side right>-->
-        <!--<q-item-tile icon="more_vert" />-->
-        <!--</q-item-side>-->
+
+        <!-- Actions-->
+        <q-item-side
+            right
+            icon="more vert">
+
+          <q-popover ref="popover">
+            <q-list
+                link
+                highlight>
+              <q-item
+                  link :to="{name: 'user.edit', params:{'userId': user.id}}">
+                <q-item-side icon="mode edit" />
+                <q-item-main>Edit user</q-item-main>
+              </q-item>
+
+              <q-item
+                  v-if="user.roles.indexOf('professor') !== -1 && !user.is_department_chief"
+                  @click="confirmAssignDepartmentChief(user), $refs.popover[index].close()">
+                <q-item-side icon="trending up" />
+                <q-item-main>Assign department chief</q-item-main>
+              </q-item>
+
+              <q-item separator @click="confirmDelete(user), $refs.popover[index].close()">
+                <q-item-side
+                    icon="delete"
+                    color="negative" />
+                <q-item-main>
+                  <q-item-tile
+                      color="negative"
+                      label>
+                    Delete user
+                  </q-item-tile>
+                </q-item-main>
+              </q-item>
+            </q-list>
+          </q-popover>
+
+        </q-item-side>
       </q-item>
 
       <q-item v-if="ready && (users.length == 0)">
@@ -38,6 +81,7 @@
   import store from 'src/store'
   import { mapState, mapActions } from 'vuex'
   import {
+    Dialog,
     QList,
     QListHeader,
     QItem,
@@ -45,24 +89,39 @@
     QItemMain,
     QItemTile,
     QItemSeparator,
+    QPopover,
     QInnerLoading,
-    QSpinner
+    QSpinner,
+    QBtn
   } from 'quasar'
 
   export default {
     components: {
-      QList, QListHeader, QItem, QItemSide, QItemMain, QItemTile, QItemSeparator, QInnerLoading, QSpinner
+      QList,
+      QListHeader,
+      QItem,
+      QItemSide,
+      QItemMain,
+      QItemTile,
+      QItemSeparator,
+      QPopover,
+      QInnerLoading,
+      QSpinner,
+      QBtn
     },
+
     data () {
       return {
         ready: false
       }
     },
+
     computed: {
       ...mapState({
         users: state => state.user.list
       })
     },
+
     mounted () {
       store.state.title = 'Users'
       this.fetchUsers()
@@ -70,10 +129,55 @@
           this.ready = true
         })
     },
+
     methods: {
       ...mapActions({
-        fetchUsers: 'user/fetch'
-      })
+        fetchUsers: 'user/fetch',
+        deleteUser: 'user/delete',
+        assignDepartmentChief: 'user/assignDepartmentChief'
+      }),
+
+      confirmAssignDepartmentChief (user) {
+        Dialog.create({
+          title: 'Assign department chief',
+          message: `Assign department chief to <strong>${user.name}</strong>?`,
+          buttons: [
+            'Cancel',
+            {
+              label: 'Assign',
+              color: 'primary',
+              raised: true,
+              handler: () => {
+                this.assignDepartmentChief(user.id)
+                  .then(() => {
+                    this.fetchUsers()
+                  })
+              }
+            }
+          ]
+        })
+      },
+
+      confirmDelete (user) {
+        Dialog.create({
+          title: 'Delete user',
+          message: `Confirm delete user <strong>${user.name}</strong> (${user.email})?`,
+          buttons: [
+            'Cancel',
+            {
+              label: 'Delete',
+              color: 'negative',
+              raised: true,
+              handler: () => {
+                this.deleteUser(user.id)
+                  .then(() => {
+                    this.fetchUsers()
+                  })
+              }
+            }
+          ]
+        })
+      }
     }
   }
 </script>

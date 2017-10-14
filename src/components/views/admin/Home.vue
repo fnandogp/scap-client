@@ -7,6 +7,7 @@
 
 <script>
   import store from 'src/store'
+
   export default {
     data () {
       return {}

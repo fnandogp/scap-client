@@ -12,10 +12,15 @@ const http = axios.create({
 
 http.interceptors.response.use((response) => {
   if (response.data.message) {
-    Alert.create({
+    let alert = Alert.create({
       color: 'positive',
       html: response.data.message
     })
+
+    setTimeout(() => {
+      // Alert for 5 seconds
+      alert.dismiss()
+    }, 5000)
   }
 
   return response
