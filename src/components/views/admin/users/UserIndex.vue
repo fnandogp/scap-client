@@ -1,29 +1,32 @@
 <template>
   <div class="layout-padding">
 
-    <q-list>
+    <q-list highlight>
+      <!--header-->
       <q-list-header>
         Users
       </q-list-header>
 
       <q-item-separator />
 
+      <!--user info -->
       <q-item
-          v-for="user in users"
+          v-for="(user, index) in users"
           :key="user.id"
           v-if="ready">
         <q-item-main>
           <q-item-tile label>{{ user.name }}
             <small>({{ user.email }})</small>
           </q-item-tile>
-          <q-item-tile sublabel>{{ user.enrollment }}</q-item-tile>
+          <q-item-tile sublabel>Enrollment: {{ user.enrollment }}</q-item-tile>
         </q-item-main>
 
+        <!-- Actions-->
         <q-item-side
             right
             icon="more vert">
 
-          <q-popover>
+          <q-popover ref="popover">
             <q-list
                 link
                 highlight>
@@ -36,7 +39,7 @@
                 <q-item-side icon="trending up" />
                 <q-item-main>Make department chief</q-item-main>
               </q-item>
-              <q-item separator>
+              <q-item separator @click="confirmDelete(user), $refs.popover[index].close()">
                 <q-item-side
                     icon="delete"
                     color="negative" />
@@ -47,6 +50,7 @@
                     Delete user
                   </q-item-tile>
                 </q-item-main>
+
               </q-item>
             </q-list>
           </q-popover>
@@ -73,6 +77,7 @@
   import store from 'src/store'
   import { mapState, mapActions } from 'vuex'
   import {
+    Dialog,
     QList,
     QListHeader,
     QItem,
@@ -100,26 +105,51 @@
       QSpinner,
       QBtn
     },
+
     data () {
       return {
         ready: false
       }
     },
+
     computed: {
       ...mapState({
         users: state => state.user.list
       })
     },
+
     mounted () {
       store.state.title = 'Users'
-      this.fetchUsers().then(() => {
-        this.ready = true
-      })
+      this.fetchUsers()
+        .then(() => {
+          this.ready = true
+        })
     },
+
     methods: {
       ...mapActions({
-        fetchUsers: 'user/fetch'
-      })
+        fetchUsers: 'user/fetch',
+        deleteUser: 'user/delete'
+      }),
+
+      confirmDelete (user) {
+        Dialog.create({
+          title: 'Delete user',
+          message: `Confirm delete user <strong>${user.name}</strong> (${user.email})?`,
+          buttons: [
+            'Cancel',
+            {
+              label: 'Delete',
+              color: 'negative',
+              raised: true,
+              icon: 'delete',
+              handler: () => {
+                this.deleteUser(user.id)
+              }
+            }
+          ]
+        })
+      }
     }
   }
 </script>

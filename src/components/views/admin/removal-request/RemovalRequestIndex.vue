@@ -1,11 +1,15 @@
 <template>
   <div class="layout-padding">
 
-    <q-list>
-      <q-list-header>Removal Requests</q-list-header>
+    <q-list highlight>
+      <!--header-->
+      <q-list-header>
+        Removal Requests
+      </q-list-header>
 
       <q-item-separator />
 
+      <!--removal request info-->
       <q-item
               v-for="removalRequest in removalRequests"
               :key="removalRequest.id"
