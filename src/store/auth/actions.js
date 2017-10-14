@@ -18,9 +18,7 @@ export default {
 
     return dispatch('setToken', token)
       .then(() => {
-        return dispatch('loadUser').catch(() => {
-          console.log('catch set token')
-        })
+        return dispatch('loadUser')
       })
   },
 

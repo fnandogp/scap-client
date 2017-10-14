@@ -10,7 +10,7 @@
       <q-item-separator />
 
       <!--user info -->
-      <q-item
+      <q-item separator
           v-for="(user, index) in users"
           :key="user.id"
           v-if="ready">
@@ -19,6 +19,7 @@
             <small>({{ user.email }})</small>
           </q-item-tile>
           <q-item-tile sublabel>Enrollment: {{ user.enrollment }}</q-item-tile>
+          <q-item-tile sublabel>Roles: {{ user.roles.join(', ') }}</q-item-tile>
         </q-item-main>
 
         <!-- Actions-->
@@ -35,10 +36,14 @@
                 <q-item-side icon="mode edit" />
                 <q-item-main>Edit user</q-item-main>
               </q-item>
-              <q-item v-if="user.roles.indexOf('professor') !== -1 && !user.is_department_chief">
+
+              <q-item
+                  v-if="user.roles.indexOf('professor') !== -1 && !user.is_department_chief"
+                  @click="confirmAssignDepartmentChief(user), $refs.popover[index].close()">
                 <q-item-side icon="trending up" />
-                <q-item-main>Make department chief</q-item-main>
+                <q-item-main>Assign department chief</q-item-main>
               </q-item>
+
               <q-item separator @click="confirmDelete(user), $refs.popover[index].close()">
                 <q-item-side
                     icon="delete"
@@ -50,7 +55,6 @@
                     Delete user
                   </q-item-tile>
                 </q-item-main>
-
               </q-item>
             </q-list>
           </q-popover>
@@ -129,8 +133,30 @@
     methods: {
       ...mapActions({
         fetchUsers: 'user/fetch',
-        deleteUser: 'user/delete'
+        deleteUser: 'user/delete',
+        assignDepartmentChief: 'user/assignDepartmentChief'
       }),
+
+      confirmAssignDepartmentChief (user) {
+        Dialog.create({
+          title: 'Assign department chief',
+          message: `Assign department chief to <strong>${user.name}</strong>?`,
+          buttons: [
+            'Cancel',
+            {
+              label: 'Assign',
+              color: 'primary',
+              raised: true,
+              handler: () => {
+                this.assignDepartmentChief(user.id)
+                  .then(() => {
+                    this.fetchUsers()
+                  })
+              }
+            }
+          ]
+        })
+      },
 
       confirmDelete (user) {
         Dialog.create({
@@ -142,9 +168,11 @@
               label: 'Delete',
               color: 'negative',
               raised: true,
-              icon: 'delete',
               handler: () => {
                 this.deleteUser(user.id)
+                  .then(() => {
+                    this.fetchUsers()
+                  })
               }
             }
           ]
