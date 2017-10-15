@@ -17,8 +17,8 @@ import i18n from './i18n'
 import store from './store'
 import './api'
 import 'quasar-extras/material-icons'
-import 'quasar-extras/ionicons'
-import 'quasar-extras/fontawesome'
+// import 'quasar-extras/ionicons'
+// import 'quasar-extras/fontawesome'
 import 'quasar-extras/animate'
 
 Vue.config.productionTip = false

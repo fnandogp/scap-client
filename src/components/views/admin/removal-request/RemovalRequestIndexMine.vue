@@ -4,7 +4,7 @@
     <q-list highlight>
       <!--header-->
       <q-list-header>
-        Removal Requests
+        Removal requests
       </q-list-header>
 
       <q-item-separator />
@@ -15,7 +15,7 @@
           :key="removalRequest.id"
           v-if="ready">
         <q-item-main>
-          <q-item-tile label>{{ removalRequest.user.data.name }} ({{ removalRequest.user.data.enrollment }})
+          <q-item-tile label>{{ removalRequest.event }} ({{ removalRequest.city }})
           </q-item-tile>
           <q-item-tile sublabel>Type: <strong>{{ removalRequest.type }}</strong></q-item-tile>
           <q-item-tile sublabel>
@@ -61,30 +61,37 @@
     date
   } from 'quasar'
 
+  console.log('Date:')
+  console.log(date)
+
   export default {
+    components: {
+      QList, QListHeader, QItem, QItemSide, QItemMain, QItemTile, QItemSeparator, QInnerLoading, QSpinner
+    },
+
     data () {
       return {
         ready: false
       }
     },
+
     computed: {
       ...mapState({
         removalRequests: state => state.removalRequest.list
       })
     },
+
     mounted () {
-      store.state.title = 'Removal Requests'
-      this.fetchRemovalRequests()
+      store.state.title = 'My removal requests'
+      this.fetchMineRemovalRequests()
         .then(() => {
           this.ready = true
         })
     },
-    components: {
-      QList, QListHeader, QItem, QItemSide, QItemMain, QItemTile, QItemSeparator, QInnerLoading, QSpinner
-    },
+
     methods: {
       ...mapActions({
-        fetchRemovalRequests: 'removalRequest/fetch'
+        fetchMineRemovalRequests: 'removalRequest/fetchMine'
       }),
 
       ...date

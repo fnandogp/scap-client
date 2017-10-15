@@ -19,17 +19,34 @@
     <!--Left Side Panel-->
     <div slot="left">
       <q-list no-border link inset-delimiter>
-        <q-list-header>Admin</q-list-header>
+        <!--current user section-->
+        <q-list-header>{{ name }}</q-list-header>
+
         <q-side-link item :to="{name: 'user.index'}">
           <q-item-side icon="supervisor account" />
           <q-item-main label="Users" />
         </q-side-link>
+
+        <q-side-link item :to="{name: 'me.removal-request.index'}">
+          <q-item-side icon="class" />
+          <q-item-main label="My removal requests" />
+        </q-side-link>
+
+        <!--admin section-->
+        <q-list-header>Admin</q-list-header>
+
+        <q-side-link item :to="{name: 'user.index'}">
+          <q-item-side icon="supervisor account" />
+          <q-item-main label="Users" />
+        </q-side-link>
+
         <q-side-link item :to="{name: 'removal-request.index'}">
           <q-item-side icon="class" />
-          <q-item-main label="Removal Requests" />
+          <q-item-main label="Removal requests" />
         </q-side-link>
 
         <q-item-separator />
+
         <q-item @click="exit()">
           <q-item-side icon="exit to app" />
           <q-item-main label="Logout" />
@@ -67,7 +84,10 @@
       return {}
     },
     computed: {
-      title: () => store.state.title
+      title: () => store.state.title,
+      name: () => {
+        return store.state.auth.user.name
+      }
     },
     methods: {
       ...mapActions({
