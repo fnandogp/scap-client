@@ -61,9 +61,6 @@
     date
   } from 'quasar'
 
-  console.log('Date:')
-  console.log(date)
-
   export default {
     components: {
       QList, QListHeader, QItem, QItemSide, QItemMain, QItemTile, QItemSeparator, QInnerLoading, QSpinner

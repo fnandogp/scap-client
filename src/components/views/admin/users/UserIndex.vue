@@ -58,7 +58,6 @@
               </q-item>
             </q-list>
           </q-popover>
-
         </q-item-side>
       </q-item>
 

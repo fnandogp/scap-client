@@ -1,4 +1,5 @@
 import http from 'src/http'
+import { date } from 'quasar'
 
 export default {
   removalRequest: {
@@ -9,8 +10,27 @@ export default {
     show: ({removalRequestId}) => http.get('/removal-requests/',
       {removalRequestId}),
 
-    create: ({type, removal_from, removal_to, event_from, event_to, event, city, removal_reason, onus}) => http.post('/removal-requests', {
-      type, removal_from, removal_to, event_from, event_to, event, city, removal_reason, onus
-    })
+    create: ({type, removalFrom, removalTo, eventFrom, eventTo, eventName, eventCity, reason, onus}) => {
+      let data = {
+        type,
+        removal_from: date.formatDate(removalFrom, 'YYYY-MM-DD'),
+        removal_to: date.formatDate(removalTo, 'YYYY-MM-DD'),
+        event_from: date.formatDate(eventFrom, 'YYYY-MM-DD'),
+        event_to: date.formatDate(eventTo, 'YYYY-MM-DD'),
+        event: eventName,
+        city: eventCity,
+        removal_reason: reason,
+        onus
+      }
+
+      return http.post('/removal-requests', data)
+    },
+
+    chooseRapporteur: ({removalRequestId, rapporteurId}) => {
+      let data = {
+        rapporteur_id: rapporteurId
+      }
+      return http.patch(`/removal-requests/${removalRequestId}/choose-rapporteur`, data)
+    }
   }
 }

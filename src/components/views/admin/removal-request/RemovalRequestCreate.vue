@@ -182,24 +182,19 @@
         removalRequestCreate: 'removalRequest/create'
       }),
       submit () {
-        // eslint-disable-next-line camelcase
-        let type, removal_from, removal_to, event_from, event_to, event, city, removal_reason, onus
-        ({
+        let {
           type,
-          removalFrom: removal_from,
-          removalTo: removal_to,
-          eventFrom: event_from,
-          eventTo: event_to,
-          eventName: event,
-          eventCity: city,
-          reason: removal_reason,
+          removalFrom,
+          removalTo,
+          eventFrom,
+          eventTo,
+          eventName,
+          eventCity,
+          reason,
           onus
-        } = this)
+        } = this
 
-        console.log('Type, removal_from, removal_to, event_from, event_to, city, reason, onus:')
-        console.log(type, removal_from, removal_to, event_from, event_to, city, removal_reason, onus)
-
-        this.removalRequestCreate({type, removal_from, removal_to, event_from, event_to, event, city, removal_reason, onus})
+        this.removalRequestCreate({type, removalFrom, removalTo, eventFrom, eventTo, eventName, eventCity, reason, onus})
           .then(() => {
             this.$router.push({name: 'me.removal-request.index'})
           })
