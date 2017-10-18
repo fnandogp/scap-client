@@ -14,7 +14,7 @@
             v-for="(removalRequest, index) in removalRequests"
             :key="removalRequest.id">
           <q-item-main>
-            <q-item-tile label>{{ removalRequest.user.data.name }} ({{ removalRequest.user.data.enrollment }})
+            <q-item-tile label>{{ removalRequest.user.name }} ({{ removalRequest.user.enrollment }})
             </q-item-tile>
             <q-item-tile sublabel>Type:
               <strong>{{ removalRequest.type }}</strong>
@@ -38,46 +38,64 @@
               <q-list
                   link
                   highlight>
-                <!--v-if="currentUser.roles.indexOf('admin') !== -1 && currentUser.is_department_chief"-->
-                <q-item @click="confirmChooseRapporteur(removalRequest), $refs.popover[index].close()">
-                  <q-item-side icon="forward" />
-                  <q-item-main>
-                    Choose rapporteur
-                  </q-item-main>
-                </q-item>
+                <div v-if="canAny(currentUser, removalRequest)">
+                  <q-item
+                      v-if="canChooseRapporteur(currentUser, removalRequest)"
+                      @click="confirmChooseRapporteur(removalRequest), $refs.popover[index].close()">
+                    <q-item-side icon="forward" />
+                    <q-item-main>
+                      Choose rapporteur
+                    </q-item-main>
+                  </q-item>
 
-                <q-item @click="confirmDeferOpinion(removalRequest), $refs.popover[index].close()">
-                  <q-item-side icon="lightbulb outline" />
-                  <q-item-main>
-                    Defer opinion
-                  </q-item-main>
-                </q-item>
+                  <q-item
+                      v-if="canDeferOpinion(currentUser, removalRequest)"
+                      @click="confirmDeferOpinion(removalRequest), $refs.popover[index].close()">
+                    <q-item-side icon="lightbulb outline" />
+                    <q-item-main>
+                      Defer opinion
+                    </q-item-main>
+                  </q-item>
 
-                <q-item @click="confirmRegisterCtOpinion(removalRequest), $refs.popover[index].close()">
-                  <q-item-side icon="lightbulb outline" />
-                  <q-item-main>
-                    Register CT opinion
-                  </q-item-main>
-                </q-item>
+                  <q-item
+                      v-if="canRegisterCtOpinion(currentUser, removalRequest)"
+                      @click="confirmRegisterCtOpinion(removalRequest), $refs.popover[index].close()">
+                    <q-item-side icon="lightbulb outline" />
+                    <q-item-main>
+                      Register CT opinion
+                    </q-item-main>
+                  </q-item>
 
-                <q-item @click="confirmRegisterPrppgOpinion(removalRequest), $refs.popover[index].close()">
-                  <q-item-side icon="lightbulb outline" />
-                  <q-item-main>
-                    Register PRPPG opinion
-                  </q-item-main>
-                </q-item>
+                  <q-item
+                      v-if="canRegisterPrppgOpinion(currentUser, removalRequest)"
+                      @click="confirmRegisterPrppgOpinion(removalRequest), $refs.popover[index].close()">
+                    <q-item-side icon="lightbulb outline" />
+                    <q-item-main>
+                      Register PRPPG opinion
+                    </q-item-main>
+                  </q-item>
 
-                <q-item @click="confirmManigestAgainst(removalRequest), $refs.popover[index].close()">
-                  <q-item-side icon="lightbulb outline" />
-                  <q-item-main>
-                    Manifest against
-                  </q-item-main>
-                </q-item>
+                  <q-item
+                      v-if="canManifestAgainst(currentUser, removalRequest)"
+                      @click="confirmManifestAgainst(removalRequest), $refs.popover[index].close()">
+                    <q-item-side icon="lightbulb outline" />
+                    <q-item-main> Manifest against</q-item-main>
+                  </q-item>
+                </div>
 
+                <div v-else>
+                  <q-item>
+                    <q-item-side
+                        color="warning"
+                        icon="error outline" />
+                    <q-item-main>No actions</q-item-main>
+                  </q-item>
+                </div>
               </q-list>
             </q-popover>
           </q-item-side>
         </q-item>
+
         <q-item v-if="removalRequests.length == 0">
           <q-item-side icon="info_outline" />
           <q-item-main sublabel="No removal requests found." />
@@ -112,6 +130,7 @@
     QSpinner,
     QPopover
   } from 'quasar'
+  import RemovalRequestHelper from 'src/mixins/RemovalRequestHelper'
 
   export default {
     data () {
@@ -121,6 +140,7 @@
         opinion: ''
       }
     },
+
     computed: {
       ...mapState({
         currentUser: state => state.auth.user,
@@ -132,6 +152,7 @@
         professors: 'user/professors'
       })
     },
+
     mounted () {
       store.state.title = 'Removal Requests'
       this.fetch()
@@ -141,9 +162,11 @@
 
       this.fetchUsers()
     },
-    components: {
-      QList, QListHeader, QItem, QItemSide, QItemMain, QItemTile, QItemSeparator, QInnerLoading, QSpinner, QPopover
-    },
+
+    components: {QList, QListHeader, QItem, QItemSide, QItemMain, QItemTile, QItemSeparator, QInnerLoading, QSpinner, QPopover},
+
+    mixins: [RemovalRequestHelper],
+
     methods: {
       ...mapActions({
         fetchUsers: 'user/fetch',
@@ -324,22 +347,10 @@
         })
       },
 
-      confirmManifestAgainst(removalRequest) {
+      confirmManifestAgainst (removalRequest) {
         Dialog.create({
-          title: 'Register PRPPG opinion',
+          title: 'Manifest against',
           form: {
-            heading1: {
-              type: 'heading',
-              label: 'Type'
-            },
-            type: {
-              type: 'radio',
-              model: 'positive',
-              items: [
-                {label: 'Positive', value: 'positive'},
-                {label: 'Negative', value: 'negative'}
-              ]
-            },
             heading2: {
               type: 'heading',
               label: 'Reason'
@@ -352,15 +363,14 @@
           buttons: [
             'Cancel',
             {
-              label: 'Register',
+              label: 'Manifest',
               color: 'primary',
               raised: true,
               handler: (data) => {
                 let removalRequestId = removalRequest.id,
-                  type = data.type,
                   reason = data.reason
 
-                this.manifestAgainst({removalRequestId, type, reason})
+                this.manifestAgainst({removalRequestId, reason})
               }
             }
           ]

@@ -32,7 +32,7 @@ export default {
   chooseRapporteur ({dispatch}, payload) {
     return api.removalRequest.chooseRapporteur(payload)
       .then((response) => {
-        dispatch('updateList', response.data.data.removal_request.data)
+        dispatch('updateList', response.data.data)
       })
   },
 
@@ -61,7 +61,7 @@ export default {
   },
 
   manifestAgainst ({dispatch}, payload) {
-    return api.removalRequest.registerPrppgOpinion(payload)
+    return api.removalRequest.manifestAgainst(payload)
       .then((response) => {
         dispatch('updateList', response.data.data.removal_request.data)
       })
