@@ -31,6 +31,14 @@ export default {
         rapporteur_id: rapporteurId
       }
       return http.patch(`/removal-requests/${removalRequestId}/choose-rapporteur`, data)
-    }
+    },
+
+    deferOpinion: ({removalRequestId, type, reason}) => http.post(`/removal-requests/${removalRequestId}/defer-opinion`, {type, reason}),
+
+    registerCtOpinion: ({removalRequestId, type, reason}) => http.post(`/removal-requests/${removalRequestId}/register-ct-opinion`, {type, reason}),
+
+    registerPrppgOpinion: ({removalRequestId, type, reason}) => http.post(`/removal-requests/${removalRequestId}/register-prppg-opinion`, {type, reason}),
+
+    manifestAgainst: ({removalRequestId, reason}) => http.post(`/removal-requests/${removalRequestId}/manifest-against`, {reason})
   }
 }

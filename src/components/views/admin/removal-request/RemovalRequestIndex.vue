@@ -46,39 +46,34 @@
                   </q-item-main>
                 </q-item>
 
-                <q-item @click="confirmDeferPositiveOpinion(removalRequest), $refs.popover[index].close()">
-                  <q-item-side icon="thumb up" />
+                <q-item @click="confirmDeferOpinion(removalRequest), $refs.popover[index].close()">
+                  <q-item-side icon="lightbulb outline" />
                   <q-item-main>
-                    Defer positive opinion
+                    Defer opinion
                   </q-item-main>
                 </q-item>
 
-                <q-item @click="confirmDeferNegativeOpinion(removalRequest), $refs.popover[index].close()">
-                  <q-item-side icon="thumb down" />
+                <q-item @click="confirmRegisterCtOpinion(removalRequest), $refs.popover[index].close()">
+                  <q-item-side icon="lightbulb outline" />
                   <q-item-main>
-                    Defer negative opinion
+                    Register CT opinion
                   </q-item-main>
                 </q-item>
 
-                <!--<q-item-->
-                <!--v-if="user.roles.indexOf('professor') !== -1 && !user.is_department_chief"-->
-                <!--@click="confirmAssignDepartmentChief(user), $refs.popover[index].close()">-->
-                <!--<q-item-side icon="trending up" />-->
-                <!--<q-item-main>Assign department chief</q-item-main>-->
-                <!--</q-item>-->
+                <q-item @click="confirmRegisterPrppgOpinion(removalRequest), $refs.popover[index].close()">
+                  <q-item-side icon="lightbulb outline" />
+                  <q-item-main>
+                    Register PRPPG opinion
+                  </q-item-main>
+                </q-item>
 
-                <!--<q-item separator @click="confirmDelete(user), $refs.popover[index].close()">-->
-                <!--<q-item-side-->
-                <!--icon="delete"-->
-                <!--color="negative" />-->
-                <!--<q-item-main>-->
-                <!--<q-item-tile-->
-                <!--color="negative"-->
-                <!--label>-->
-                <!--Delete user-->
-                <!--</q-item-tile>-->
-                <!--</q-item-main>-->
-                <!--</q-item>-->
+                <q-item @click="confirmManigestAgainst(removalRequest), $refs.popover[index].close()">
+                  <q-item-side icon="lightbulb outline" />
+                  <q-item-main>
+                    Manifest against
+                  </q-item-main>
+                </q-item>
+
               </q-list>
             </q-popover>
           </q-item-side>
@@ -155,7 +150,15 @@
 
         fetch: 'removalRequest/fetch',
 
-        chooseRapporteur: 'removalRequest/chooseRapporteur'
+        chooseRapporteur: 'removalRequest/chooseRapporteur',
+
+        deferOpinion: 'removalRequest/deferOpinion',
+
+        registerCtOpinion: 'removalRequest/registerCtOpinion',
+
+        registerPrppgOpinion: 'removalRequest/registerPrppgOpinion',
+
+        manifestAgainst: 'removalRequest/manifestAgainst'
       }),
 
       formatDate: date.formatDate,
@@ -192,15 +195,27 @@
         })
       },
 
-      confirmDeferPositiveOpinion (removalRequest) {
+      confirmDeferOpinion (removalRequest) {
         Dialog.create({
-          title: 'Defer positive opinion',
+          title: 'Defer opinion',
           form: {
-            heading: {
+            heading1: {
               type: 'heading',
-              label: 'Opinion'
+              label: 'Type'
             },
-            option: {
+            type: {
+              type: 'radio',
+              model: 'positive',
+              items: [
+                {label: 'Positive', value: 'positive'},
+                {label: 'Negative', value: 'negative'}
+              ]
+            },
+            heading2: {
+              type: 'heading',
+              label: 'Reason'
+            },
+            reason: {
               type: 'textarea',
               model: ''
             }
@@ -211,19 +226,39 @@
               label: 'Defer',
               color: 'primary',
               raised: true,
-              handler: () => {
-                console.log('positive opinion defered')
+              handler: (data) => {
+                let removalRequestId = removalRequest.id,
+                  type = data.type,
+                  reason = data.reason
+
+                this.deferOpinion({removalRequestId, type, reason})
               }
             }
           ]
         })
       },
 
-      confirmDeferNegativeOpinion (removalRequest) {
+      confirmRegisterCtOpinion (removalRequest) {
         Dialog.create({
-          title: 'Defer negative opinion',
+          title: 'Register CT opinion',
           form: {
-            option: {
+            heading1: {
+              type: 'heading',
+              label: 'Type'
+            },
+            type: {
+              type: 'radio',
+              model: 'positive',
+              items: [
+                {label: 'Positive', value: 'positive'},
+                {label: 'Negative', value: 'negative'}
+              ]
+            },
+            heading2: {
+              type: 'heading',
+              label: 'Reason'
+            },
+            reason: {
               type: 'textarea',
               model: ''
             }
@@ -231,11 +266,101 @@
           buttons: [
             'Cancel',
             {
-              label: 'Defer',
-              color: 'negative',
+              label: 'Register',
+              color: 'primary',
               raised: true,
-              handler: () => {
-                console.log('negative opinion defered')
+              handler: (data) => {
+                let removalRequestId = removalRequest.id,
+                  type = data.type,
+                  reason = data.reason
+
+                this.registerCtOpinion({removalRequestId, type, reason})
+              }
+            }
+          ]
+        })
+      },
+
+      confirmRegisterPrppgOpinion (removalRequest) {
+        Dialog.create({
+          title: 'Register PRPPG opinion',
+          form: {
+            heading1: {
+              type: 'heading',
+              label: 'Type'
+            },
+            type: {
+              type: 'radio',
+              model: 'positive',
+              items: [
+                {label: 'Positive', value: 'positive'},
+                {label: 'Negative', value: 'negative'}
+              ]
+            },
+            heading2: {
+              type: 'heading',
+              label: 'Reason'
+            },
+            reason: {
+              type: 'textarea',
+              model: ''
+            }
+          },
+          buttons: [
+            'Cancel',
+            {
+              label: 'Register',
+              color: 'primary',
+              raised: true,
+              handler: (data) => {
+                let removalRequestId = removalRequest.id,
+                  type = data.type,
+                  reason = data.reason
+
+                this.registerPrppgOpinion({removalRequestId, type, reason})
+              }
+            }
+          ]
+        })
+      },
+
+      confirmManifestAgainst(removalRequest) {
+        Dialog.create({
+          title: 'Register PRPPG opinion',
+          form: {
+            heading1: {
+              type: 'heading',
+              label: 'Type'
+            },
+            type: {
+              type: 'radio',
+              model: 'positive',
+              items: [
+                {label: 'Positive', value: 'positive'},
+                {label: 'Negative', value: 'negative'}
+              ]
+            },
+            heading2: {
+              type: 'heading',
+              label: 'Reason'
+            },
+            reason: {
+              type: 'textarea',
+              model: ''
+            }
+          },
+          buttons: [
+            'Cancel',
+            {
+              label: 'Register',
+              color: 'primary',
+              raised: true,
+              handler: (data) => {
+                let removalRequestId = removalRequest.id,
+                  type = data.type,
+                  reason = data.reason
+
+                this.manifestAgainst({removalRequestId, type, reason})
               }
             }
           ]
