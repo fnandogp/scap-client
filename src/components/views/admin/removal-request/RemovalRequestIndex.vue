@@ -43,43 +43,49 @@
                       v-if="canChooseRapporteur(currentUser, removalRequest)"
                       @click="confirmChooseRapporteur(removalRequest), $refs.popover[index].close()">
                     <q-item-side icon="forward" />
-                    <q-item-main>
-                      Choose rapporteur
-                    </q-item-main>
+                    <q-item-main>Choose rapporteur</q-item-main>
                   </q-item>
 
                   <q-item
                       v-if="canDeferOpinion(currentUser, removalRequest)"
                       @click="confirmDeferOpinion(removalRequest), $refs.popover[index].close()">
                     <q-item-side icon="lightbulb outline" />
-                    <q-item-main>
-                      Defer opinion
-                    </q-item-main>
+                    <q-item-main>Defer opinion</q-item-main>
                   </q-item>
 
                   <q-item
                       v-if="canRegisterCtOpinion(currentUser, removalRequest)"
                       @click="confirmRegisterCtOpinion(removalRequest), $refs.popover[index].close()">
                     <q-item-side icon="lightbulb outline" />
-                    <q-item-main>
-                      Register CT opinion
-                    </q-item-main>
+                    <q-item-main>Register CT opinion</q-item-main>
                   </q-item>
 
                   <q-item
                       v-if="canRegisterPrppgOpinion(currentUser, removalRequest)"
                       @click="confirmRegisterPrppgOpinion(removalRequest), $refs.popover[index].close()">
                     <q-item-side icon="lightbulb outline" />
-                    <q-item-main>
-                      Register PRPPG opinion
-                    </q-item-main>
+                    <q-item-main>Register PRPPG opinion</q-item-main>
                   </q-item>
 
                   <q-item
                       v-if="canManifestAgainst(currentUser, removalRequest)"
                       @click="confirmManifestAgainst(removalRequest), $refs.popover[index].close()">
                     <q-item-side icon="lightbulb outline" />
-                    <q-item-main> Manifest against</q-item-main>
+                    <q-item-main>Manifest against</q-item-main>
+                  </q-item>
+
+                  <q-item
+                      v-if="canArchive(currentUser, removalRequest)"
+                      @click="confirmArchive(removalRequest), $refs.popover[index].close()">
+                    <q-item-side icon="archive" />
+                    <q-item-main>Archive</q-item-main>
+                  </q-item>
+
+                  <q-item
+                      v-if="canCancel(currentUser, removalRequest)"
+                      @click="confirmCancel(removalRequest), $refs.popover[index].close()">
+                    <q-item-side icon="cancel" />
+                    <q-item-main>Cancel</q-item-main>
                   </q-item>
                 </div>
 
@@ -181,7 +187,11 @@
 
         registerPrppgOpinion: 'removalRequest/registerPrppgOpinion',
 
-        manifestAgainst: 'removalRequest/manifestAgainst'
+        manifestAgainst: 'removalRequest/manifestAgainst',
+
+        archive: 'removalRequest/archive',
+
+        cancel: 'removalRequest/cancel'
       }),
 
       formatDate: date.formatDate,
@@ -371,6 +381,55 @@
                   reason = data.reason
 
                 this.manifestAgainst({removalRequestId, reason})
+              }
+            }
+          ]
+        })
+      },
+
+      confirmArchive (removalRequest) {
+        Dialog.create({
+          title: 'Archive removal request',
+          buttons: [
+            'Cancel',
+            {
+              label: 'Archive',
+              color: 'primary',
+              raised: true,
+              handler: () => {
+                let removalRequestId = removalRequest.id
+
+                this.archive({removalRequestId})
+              }
+            }
+          ]
+        })
+      },
+
+      confirmCancel (removalRequest) {
+        Dialog.create({
+          title: 'Cancel removal request',
+          form: {
+            heading2: {
+              type: 'heading',
+              label: 'Reason'
+            },
+            reason: {
+              type: 'textarea',
+              model: ''
+            }
+          },
+          buttons: [
+            'Cancel',
+            {
+              label: 'Cancel',
+              color: 'negative',
+              raised: true,
+              handler: (data) => {
+                let removalRequestId = removalRequest.id,
+                  reason = data.reason
+
+                this.cancel({removalRequestId, reason})
               }
             }
           ]

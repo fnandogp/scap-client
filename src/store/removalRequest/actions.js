@@ -65,5 +65,23 @@ export default {
       .then((response) => {
         dispatch('updateList', response.data.data.removal_request.data)
       })
+  },
+
+  archive ({dispatch}, payload) {
+    return api.removalRequest.archive(payload)
+      .then((response) => {
+        console.log('Response:')
+        console.log(response)
+        dispatch('updateList', response.data.data)
+      })
+  },
+
+  cancel ({dispatch}, payload) {
+    return api.removalRequest.cancel(payload)
+      .then((response) => {
+        console.log('Response:')
+        console.log(response)
+        dispatch('updateList', response.data.data)
+      })
   }
 }

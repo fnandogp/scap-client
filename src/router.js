@@ -64,24 +64,13 @@ let router = new VueRouter({
           component: load('views/admin/Home'),
           meta: {requiresAuth: true}
         },
-        // Mine
-        {
-          path: 'me/removal-requests',
-          name: 'me.removal-request.index',
-          components: {
-            default: load('views/admin/removal-request/RemovalRequestIndexMine'),
-            'floatingActions': load('views/admin/removal-request/RemovalRequestIndexMineFloatingActions')
-          },
-          meta: {requiresAuth: true}
-        },
         // Users
         {
           path: '/users',
           name: 'user.index',
           components: {
             default: load('views/admin/users/UserIndex'),
-            'floatingActions': load(
-              'views/admin/users/UserIndexFloatingActions')
+            'floatingActions': load('views/admin/users/UserIndexFloatingActions')
           },
           meta: {requiresAuth: true}
         },
@@ -101,7 +90,10 @@ let router = new VueRouter({
         {
           path: '/removal-requests',
           name: 'removal-request.index',
-          component: load('views/admin/removal-request/RemovalRequestIndex'),
+          components: {
+            default: load('views/admin/removal-request/RemovalRequestIndex'),
+            'floatingActions': load('views/admin/removal-request/RemovalRequestIndexFloatingActions')
+          },
           meta: {requiresAuth: true}
         },
         {

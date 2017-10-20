@@ -27,9 +27,7 @@ export default {
     },
 
     chooseRapporteur: ({removalRequestId, rapporteurId}) => {
-      let data = {
-        rapporteur_id: rapporteurId
-      }
+      let data = {rapporteur_id: rapporteurId}
       return http.patch(`/removal-requests/${removalRequestId}/choose-rapporteur`, data)
     },
 
@@ -39,6 +37,13 @@ export default {
 
     registerPrppgOpinion: ({removalRequestId, type, reason}) => http.post(`/removal-requests/${removalRequestId}/register-prppg-opinion`, {type, reason}),
 
-    manifestAgainst: ({removalRequestId, reason}) => http.post(`/removal-requests/${removalRequestId}/manifest-against`, {reason})
+    manifestAgainst: ({removalRequestId, reason}) => http.post(`/removal-requests/${removalRequestId}/manifest-against`, {reason}),
+
+    archive: ({removalRequestId}) => http.patch(`/removal-requests/${removalRequestId}/archive`),
+
+    cancel: ({removalRequestId, reason}) => {
+      let data = {cancellation_reason: reason}
+      return http.patch(`/removal-requests/${removalRequestId}/cancel`, data)
+    }
   }
 }

@@ -3,7 +3,6 @@
     <div class="col-12">
 
       <q-list>
-
         <q-list-header>
           Type
         </q-list-header>
@@ -19,7 +18,6 @@
               val="international"
               label="International" />
         </q-item>
-
 
         <q-item-separator />
 
