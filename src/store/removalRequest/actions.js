@@ -39,7 +39,6 @@ export default {
   deferOpinion ({dispatch}, payload) {
     return api.removalRequest.deferOpinion(payload)
       .then((response) => {
-        console.log(response)
         dispatch('updateList', response.data.data.removal_request.data)
       })
   },
@@ -47,7 +46,6 @@ export default {
   registerCtOpinion ({dispatch}, payload) {
     return api.removalRequest.registerCtOpinion(payload)
       .then((response) => {
-        console.log(response)
         dispatch('updateList', response.data.data.removal_request.data)
       })
   },
@@ -55,7 +53,6 @@ export default {
   registerPrppgOpinion ({dispatch}, payload) {
     return api.removalRequest.registerPrppgOpinion(payload)
       .then((response) => {
-        console.log(response)
         dispatch('updateList', response.data.data.removal_request.data)
       })
   },
@@ -70,8 +67,6 @@ export default {
   archive ({dispatch}, payload) {
     return api.removalRequest.archive(payload)
       .then((response) => {
-        console.log('Response:')
-        console.log(response)
         dispatch('updateList', response.data.data)
       })
   },
@@ -79,8 +74,6 @@ export default {
   cancel ({dispatch}, payload) {
     return api.removalRequest.cancel(payload)
       .then((response) => {
-        console.log('Response:')
-        console.log(response)
         dispatch('updateList', response.data.data)
       })
   }

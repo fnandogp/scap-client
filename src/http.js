@@ -1,6 +1,6 @@
-import Vue from 'vue'
 import axios from 'axios'
 import { Alert } from 'quasar'
+import Vue from 'vue'
 
 const http = axios.create({
   baseURL: process.env.API_URL,
@@ -25,23 +25,23 @@ http.interceptors.response.use((response) => {
 
   return response
 }, (response) => {
-  let errors = response.data.errors
+  let errors = response.response.data.errors
 
-  if (response.status === 422) {
-    let messages = []
+  //  if (response.request.status === 422) {
+  let messages = []
 
-    for (let key in errors) {
-      for (let message of errors[key]) {
-        messages.push(message)
-      }
+  for (let key in errors) {
+    for (let message of errors[key]) {
+      messages.push(message)
     }
-    Alert.create({
-      color: 'negative',
-      html: messages
-    })
   }
+  Alert.create({
+    color: 'negative',
+    html: messages
+  })
+  //  }
 
-  return response
+  return Promise.reject(new Error(response))
 })
 
 Vue.prototype.$http = http

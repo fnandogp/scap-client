@@ -39,7 +39,7 @@
       submit () {
         let {email, password} = this
         this.attemptLogin({email, password})
-          .then(() => {
+          .then((response) => {
             this.$router.push({name: 'home'})
           })
       }
