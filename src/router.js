@@ -11,7 +11,7 @@ Vue.use(VueRouter)
  */
 function load (component) {
   // '@' is aliased to src/components
-  return () => import(`@/${component}.vue`)
+  return () => import(`src/views/${component}.vue`)
 }
 
 let router = new VueRouter({
@@ -31,37 +31,37 @@ let router = new VueRouter({
   routes: [
     {
       path: '/auth',
-      component: load('views/auth/Auth'),
+      component: load('auth/Auth'),
       children: [
         {
           path: 'login',
           name: 'auth.login',
-          component: load('views/auth/Login'),
+          component: load('auth/Login'),
           meta: {requiresGuest: true}
         },
         {
           path: 'password',
           name: 'auth.password-recovery-request',
-          component: load('views/auth/PasswordRecoveryRequest'),
+          component: load('auth/PasswordRecoveryRequest'),
           meta: {requiresGuest: true}
         },
         {
           path: 'password-change',
           name: 'auth.password-recovery-change',
-          component: load('views/auth/PasswordRecoveryChange'),
+          component: load('auth/PasswordRecoveryChange'),
           meta: {requiresGuest: true}
         }
       ]
     },
     {
       path: '/',
-      component: load('views/admin/Master'),
+      component: load('admin/Master'),
       meta: {requiresAuth: true},
       children: [
         {
           path: '/',
           name: 'home',
-          component: load('views/admin/Home'),
+          component: load('admin/Home'),
           meta: {requiresAuth: true}
         },
         // Users
@@ -69,21 +69,21 @@ let router = new VueRouter({
           path: '/users',
           name: 'user.index',
           components: {
-            default: load('views/admin/users/UserIndex'),
-            'floatingActions': load('views/admin/users/UserIndexFloatingActions')
+            default: load('admin/users/UserIndex'),
+            'floatingActions': load('admin/users/UserIndexFloatingActions')
           },
           meta: {requiresAuth: true}
         },
         {
           path: '/users/create',
           name: 'user.create',
-          component: load('views/admin/users/UserCreate'),
+          component: load('admin/users/UserCreate'),
           meta: {requiresAuth: true}
         },
         {
           path: '/users/:userId/edit',
           name: 'user.edit',
-          component: load('views/admin/users/UserEdit'),
+          component: load('admin/users/UserEdit'),
           meta: {requiresAuth: true}
         },
         // Removal requests
@@ -91,15 +91,15 @@ let router = new VueRouter({
           path: '/removal-requests',
           name: 'removal-request.index',
           components: {
-            default: load('views/admin/removal-request/RemovalRequestIndex'),
-            'floatingActions': load('views/admin/removal-request/RemovalRequestIndexFloatingActions')
+            default: load('admin/removal-request/RemovalRequestIndex'),
+            'floatingActions': load('admin/removal-request/RemovalRequestIndexFloatingActions')
           },
           meta: {requiresAuth: true}
         },
         {
           path: '/removal-requests/create',
           name: 'removal-request.create',
-          component: load('views/admin/removal-request/RemovalRequestCreate'),
+          component: load('admin/removal-request/RemovalRequestCreate'),
           meta: {requiresAuth: true}
         }
       ]
@@ -107,7 +107,7 @@ let router = new VueRouter({
     {
       path: '*',
       name: 'not-found',
-      component: load('views/NotFound')
+      component: load('NotFound')
     }
   ]
 })
