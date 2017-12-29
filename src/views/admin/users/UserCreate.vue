@@ -71,6 +71,8 @@
       submit () {
         let {name, email, enrollment, password, roles} = this
         this.userCreate({name, email, enrollment, password, roles}).then(() => {
+          console.log()
+
           this.$router.push({name: 'user.index'})
         })
       }

@@ -23,7 +23,7 @@ export default {
   },
 
   attemptLogin ({dispatch}, payload) {
-    api.auth.attemptLogin(payload)
+    return api.auth.attemptLogin(payload)
       .then((response) => {
         let token = response.data.token
         let user = response.data.data
@@ -32,7 +32,7 @@ export default {
 
         dispatch('setUser', token)
 
-        return user
+        return Promise.resolve(user)
       })
   },
 
@@ -46,7 +46,7 @@ export default {
   },
 
   loadUser ({dispatch}) {
-    api.auth.me()
+    return api.auth.me()
       .then((response) => {
         let user = response.data.data
 

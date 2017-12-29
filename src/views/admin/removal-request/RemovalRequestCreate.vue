@@ -194,7 +194,7 @@
 
         this.removalRequestCreate({type, removalFrom, removalTo, eventFrom, eventTo, eventName, eventCity, reason, onus})
           .then(() => {
-            this.$router.push({name: 'me.removal-request.index'})
+            this.$router.push({name: 'removal-request.index'})
           })
       }
     }
