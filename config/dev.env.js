@@ -3,5 +3,5 @@ var prodEnv = require('./prod.env')
 
 module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
-  API_URL: '"http://api.scap.localhost/"'
+  API_URL: '"http://scap-api.localhost/"'
 })

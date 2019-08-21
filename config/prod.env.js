@@ -1,4 +1,4 @@
 module.exports = {
   NODE_ENV: '"production"',
-  API_URL: '"http://api.scap.dev"'
+  API_URL: '"http://scap-api.localhost"'
 }
